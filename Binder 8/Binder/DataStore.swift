@@ -450,13 +450,10 @@ class DataStore {
                     let taskID = task["taskID"]
                     let taskDescription = task["taskDescription"]
                     let taskDeadlineDate = task["taskDeadlineDate"]
-                    let taskDeadlineTime = task["taskDeadlineTime"]
                     let taskReminderDate = task["taskReminderDate"]
-                    let taskReminderTime = task["taskReminderTime"]
                     let personID = task["personID"]
                     let personIDforObject = Int(personID!)
-                    let taskStartDate = task["taskStartDate"]
-                    let newTask = Tasks(taskID:taskIDforObject!, taskDescription:taskDescription!, taskDeadlineDate:taskDeadlineDate!, taskDeadlineTime:taskDeadlineTime!, taskReminderDate:taskReminderDate!, taskReminderTime:taskReminderTime!, personID:personIDforObject!, taskStartDate:taskStartDate!)
+                    let newTask = Tasks(taskID:taskIDforObject!, taskDescription:taskDescription!, taskDeadlineDate:taskDeadlineDate!, taskReminderDate:taskReminderDate!, personID:personIDforObject!)
                     self.arrayOfTasks.append(newTask)
                 }
             }
@@ -471,33 +468,24 @@ class DataStore {
             "taskID": ID,
             "taskDescription": String(task.taskDescription),
             "taskDeadlineDate": String(task.taskDeadlineDate),
-            "taskDeadlineTime": String(task.taskDeadlineTime),
             "taskReminderDate": String(task.taskReminderDate),
-            "taskReminderTime": String(task.taskReminderTime),
-            "personID": String(task.personID),
-            "taskStartDate": String(task.taskStartDate)
+            "personID": String(task.personID)
             ] as [String : Any]
         
         self.ref.child("tasks").child(String("task" + String(task.taskID))).setValue(taskRecord)
         arrayOfTasks.append(task)
     }
     
-    func updateTask(task: Tasks, newDescription: String, newDeadlineDate: String, newDeadlineTime:String, newReminderDate: String, newReminderTime: String, samePersonID:Int, newStartDate:String){
+    func updateTask(task: Tasks, newDescription: String, newDeadlineDate: String, newReminderDate: String, samePersonID:Int){
         task.taskDescription = newDescription
         task.taskDeadlineDate = newDeadlineDate
-        task.taskDeadlineTime = newDeadlineTime
         task.taskReminderDate = newReminderDate
-        task.taskReminderTime = newReminderTime
         task.personID = samePersonID
-        task.taskStartDate = newStartDate
         let refToUpdate = self.ref.child("tasks").child(String("task") + String(task.taskID))
             refToUpdate.updateChildValues([
                 "taskDescription": String(newDescription),
                 "taskDeadlineDate": String(newDeadlineDate),
-                "taskDeadlineTime": String(newDeadlineTime),
-                "taskReminderDate": String(newReminderDate),
-                "taskReminderTime": String(newReminderTime),
-                "taskStartDate": String(newStartDate)
+                "taskReminderDate": String(newReminderDate)
                 ])
     }
     

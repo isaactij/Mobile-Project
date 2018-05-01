@@ -7,26 +7,22 @@
 //
 
 import UIKit
+import EventKit
 
 class CreateTaskViewController: UIViewController {
     @IBOutlet weak var taskDescriptionTextInput: UITextField!
     @IBOutlet weak var deadlineDateTextField: UITextField!
-    @IBOutlet weak var deadlineTimeTextField: UITextField!
     @IBOutlet weak var reminderDateTextField: UITextField!
-    @IBOutlet weak var reminderTimeTextField: UITextField!
     @IBOutlet weak var errorLabel: UILabel!
-    
     let pickerDeadlineDate = UIDatePicker()
     let pickerReminderDate = UIDatePicker()
-    let pickerDeadlineTime = UIDatePicker()
-    let pickerReminderTime = UIDatePicker()
+    let eventStore = EKEventStore()
+    var calendars: [EKCalendar]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         deadlineDateTextField.text = ""
-        deadlineTimeTextField.text = ""
         reminderDateTextField.text = ""
-        reminderTimeTextField.text = ""
         errorLabel.text = ""
         createDatePicker()
     }
@@ -46,47 +42,14 @@ class CreateTaskViewController: UIViewController {
         toolbarRR.setItems([doneRR], animated: false)
         reminderDateTextField.inputAccessoryView = toolbarRR
         reminderDateTextField.inputView = pickerReminderDate
-        
-        let toolbarDT = UIToolbar()
-        toolbarDT.sizeToFit()
-        let doneDT = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(donePressedDT))
-        toolbarDT.setItems([doneDT], animated: false)
-        deadlineTimeTextField.inputAccessoryView = toolbarDT
-        deadlineTimeTextField.inputView = pickerDeadlineTime
-        
-        let toolbarRT = UIToolbar()
-        toolbarRT.sizeToFit()
-        let doneRT = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(donePressedRT))
-        toolbarRT.setItems([doneRT], animated: false)
-        reminderTimeTextField.inputAccessoryView = toolbarRT
-        reminderTimeTextField.inputView = pickerReminderTime
-        
-        pickerDeadlineDate.datePickerMode = .date
-        pickerReminderDate.datePickerMode = .date
-        pickerDeadlineTime.datePickerMode = .time
-        pickerReminderTime.datePickerMode = .time
-    }
-    
-    @objc func donePressedDT() {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        let deadlineTimeString = formatter.string(from: pickerDeadlineTime.date)
-        deadlineTimeTextField.text = "\(deadlineTimeString)"
-        self.view.endEditing(true)
-    }
-    
-    @objc func donePressedRT() {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        let reminderTimeString = formatter.string(from: pickerReminderTime.date)
-        reminderTimeTextField.text = "\(reminderTimeString)"
-        self.view.endEditing(true)
     }
     
     @objc func donePressedDD() {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
-        let deadlineDateString = formatter.string(from: pickerDeadlineDate.date)
+        var deadlineDateString = formatter.string(from: pickerDeadlineDate.date)
+        formatter.timeStyle = .short
+        deadlineDateString = " " + formatter.string(from: pickerDeadlineDate.date)
         deadlineDateTextField.text = "\(deadlineDateString)"
         self.view.endEditing(true)
     }
@@ -94,7 +57,9 @@ class CreateTaskViewController: UIViewController {
     @objc func donePressedRR() {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
-        let reminderDateString = formatter.string(from: pickerReminderDate.date)
+        var reminderDateString = formatter.string(from: pickerReminderDate.date)
+        formatter.timeStyle = .short
+        reminderDateString = " " + formatter.string(from: pickerReminderDate.date)
         reminderDateTextField.text = "\(reminderDateString)"
         self.view.endEditing(true)
     }
@@ -103,46 +68,71 @@ class CreateTaskViewController: UIViewController {
         var description = taskDescriptionTextInput.text
         description = description?.trimmingCharacters(in: .whitespacesAndNewlines)
         if filledFields(description:description!) {
+            let authorized:Bool = checkCalendarAuthorizationStatus()
+            if authorized {
+                addToCalendar()
+            }
             addTask(description:description!)
             performSegue(withIdentifier: "unwindToTaskList", sender: self)
         }
         
     }
     
+    func checkCalendarAuthorizationStatus() -> Bool{
+        let status = EKEventStore.authorizationStatus(for: .event)
+        if status == .authorized {
+            return true
+        }else{
+            return false
+        }
+    }
+    
+    func addToCalendar(){
+        let calendarIdentifier = UserDefaults.standard.string(forKey: "Binder")
+        let calendar = eventStore.calendar(withIdentifier: calendarIdentifier!)
+        if(calendar != nil) {
+            let endDate = pickerDeadlineDate.date
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .long
+            dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+            let event = EKEvent(eventStore: eventStore)
+            event.calendar = calendar
+            event.title = taskDescriptionTextInput.text
+            event.startDate = endDate
+            event.endDate = endDate
+            do {
+                try eventStore.save(event, span: EKSpan.thisEvent)
+                
+//                    let alert = UIAlertController(title: "Event Saved", message: "Event was successfully saved", preferredStyle: .alert)
+//                    let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+//                    alert.addAction(OKAction)
+//
+//                    self.present(alert, animated: true, completion: nil)
+            } catch _ {
+//                    let alert = UIAlertController(title: "Event Save Error", message: "Event could not be saved", preferredStyle: .alert)
+//                    let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+//                    alert.addAction(OKAction)
+//
+//                    self.present(alert, animated: true, completion: nil)
+            }
+        }
+    }
     
     func addTask(description:String){
-        //DataStore.shared.loadTasks()
         let index:Int = DataStore.shared.countTasks()
         let currentUserID = DataStore.shared.getIndexOfUserLoggedIn()
-        let task:Tasks = Tasks(taskID: index, taskDescription: description, taskDeadlineDate: deadlineDateTextField.text!, taskDeadlineTime: deadlineTimeTextField.text!, taskReminderDate: reminderDateTextField.text!, taskReminderTime: reminderTimeTextField.text!, personID: currentUserID, taskStartDate: String(describing: Date()))
+        let task:Tasks = Tasks(taskID: index, taskDescription: description, taskDeadlineDate: String(describing: pickerDeadlineDate.date), taskReminderDate: String(describing: pickerReminderDate.date), personID: currentUserID)
         DataStore.shared.addTask(task: task)
     }
     
     func filledFields(description:String) -> Bool{
         var filled: Bool = true
-        if taskDescriptionTextInput.text == "" || deadlineDateTextField.text == "" || deadlineTimeTextField.text == "" || reminderDateTextField.text == "" || reminderTimeTextField.text == ""{
+        if taskDescriptionTextInput.text == "" || deadlineDateTextField.text == "" || reminderDateTextField.text == "" {
             errorLabel.text = "Please enter all fields"
             filled = false
         }
         return filled
     }
-    
-    @IBAction func clearButtonOnePressed(_ sender: Any) {
-        deadlineDateTextField.text = ""
-    }
-    
-    @IBAction func clearButtonTwoPressed(_ sender: Any) {
-        deadlineTimeTextField.text = ""
-    }
-    
-    @IBAction func clearButtonThreePressed(_ sender: Any) {
-        reminderDateTextField.text = ""
-    }
-    
-    @IBAction func clearButtonFourPressed(_ sender: Any) {
-        reminderTimeTextField.text = ""
-    }
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         

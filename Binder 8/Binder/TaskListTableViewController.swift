@@ -57,7 +57,16 @@ class TaskListTableViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: "taskCell", for: indexPath) as! TaskTableViewCell
             let task = arrayOfTasks[indexPath.row]
             cell.taskLabel.text = task.taskDescription
-            cell.deadlineLabel.text = task.taskDeadlineDate
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+            dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+            let date = dateFormatter.date(from: task.taskDeadlineDate)!
+            let formatter = DateFormatter()
+            formatter.dateStyle = .short
+            var deadlineDateString = formatter.string(from: date)
+            formatter.timeStyle = .short
+            deadlineDateString = " " + formatter.string(from: date)
+            cell.deadlineLabel.text = deadlineDateString
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "newButtonCell", for: indexPath)
@@ -118,7 +127,7 @@ class TaskListTableViewController: UITableViewController {
                 index = index + 1
             }
         }
-        if calendarIndex == 0 {
+        if calendarIndex == -1 {
             createCalendar()
             addEntries()
         }
@@ -143,10 +152,10 @@ class TaskListTableViewController: UITableViewController {
         do{
             try eventStore.saveCalendar(newCalendar, commit: true)
             UserDefaults.standard.set(newCalendar.calendarIdentifier, forKey: "Binder")
-            let alert = UIAlertController(title: "Calendar Saved", message: "Calendar was successfully saved", preferredStyle: .alert)
-            let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-            alert.addAction(OKAction)
-            self.present(alert, animated: true, completion: nil)
+//            let alert = UIAlertController(title: "Calendar Saved", message: "Calendar was successfully saved", preferredStyle: .alert)
+//            let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+//            alert.addAction(OKAction)
+//            self.present(alert, animated: true, completion: nil)
         } catch _ {
             let alert = UIAlertController(title: "Calendar Save Error", message: "Calendar could not be saved", preferredStyle: .alert)
             let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
@@ -163,28 +172,24 @@ class TaskListTableViewController: UITableViewController {
             if(calendar != nil) {
                 for i in 0...taskCount - 1 {
                     let task = DataStore.shared.getTask(index: i)
-                    let startDate = Date()
                     let endDate = task.taskDeadlineDate
                     let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "mm/dd/yyyy"
+                    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
                     dateFormatter.locale = Locale(identifier: "en_US_POSIX")
                     let date = dateFormatter.date(from: endDate)!
-                    let c = Calendar.current
-                    let components = c.dateComponents([.month, .day, .year], from: date)
-                    let finalEndDate = c.date(from:components)
                     let event = EKEvent(eventStore: eventStore)
                     event.calendar = calendar
                     event.title = task.taskDescription
-                    event.startDate = startDate
-                    event.endDate = finalEndDate
+                    event.startDate = date
+                    event.endDate = date
                     do {
                         try eventStore.save(event, span: EKSpan.thisEvent)
                         
-                        let alert = UIAlertController(title: "Event Saved", message: "Event was successfully saved", preferredStyle: .alert)
-                        let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                        alert.addAction(OKAction)
-                        
-                        self.present(alert, animated: true, completion: nil)
+//                        let alert = UIAlertController(title: "Event Saved", message: "Event was successfully saved", preferredStyle: .alert)
+//                        let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+//                        alert.addAction(OKAction)
+//                        
+//                        self.present(alert, animated: true, completion: nil)
                     } catch _ {
                         let alert = UIAlertController(title: "Event Save Error", message: "Event could not be saved", preferredStyle: .alert)
                         let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
