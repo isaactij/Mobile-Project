@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13772" systemVersion="16G29" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Assignments" representedClassName="Assignments" syncable="YES">
+        <attribute name="assignmentID" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="assignmentType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="courseID" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="percentOfGrade" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
+    <entity name="Courses" representedClassName="Courses" syncable="YES">
+        <attribute name="courseAbbreviation" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="courseID" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="courseName" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="People" representedClassName="People" syncable="YES">
+        <attribute name="password" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="personID" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="PeopleInCourses" representedClassName="PeopleInCourses" syncable="YES">
+        <attribute name="courseID" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="personID" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="pk" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Assignments" positionX="-18" positionY="63" width="128" height="105"/>
+        <element name="Courses" positionX="-54" positionY="18" width="128" height="90"/>
+        <element name="People" positionX="-63" positionY="-18" width="128" height="90"/>
+        <element name="PeopleInCourses" positionX="-36" positionY="45" width="128" height="90"/>
+    </elements>
+</model>
