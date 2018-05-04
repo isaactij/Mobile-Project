@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		5F5D9357250B1FD2F579DB59 /* Pods_Binder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72123C6C223493D33EDEFD26 /* Pods_Binder.framework */; };
 		625C245D2083D17200E60E8D /* CourseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625C245C2083D17200E60E8D /* CourseTableViewController.swift */; };
+		62750637209CF8DE00732965 /* visualize_history.sh in Resources */ = {isa = PBXBuildFile; fileRef = 62750636209CF8DE00732965 /* visualize_history.sh */; };
+		62750639209CF8EA00732965 /* gitlogparse.py in Resources */ = {isa = PBXBuildFile; fileRef = 62750638209CF8EA00732965 /* gitlogparse.py */; };
 		6288FCEF2044DB0C00EC28E1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6288FCEE2044DB0C00EC28E1 /* AppDelegate.swift */; };
 		6288FCF42044DB0C00EC28E1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6288FCF22044DB0C00EC28E1 /* Main.storyboard */; };
 		6288FCF72044DB0C00EC28E1 /* Binder.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6288FCF52044DB0C00EC28E1 /* Binder.xcdatamodeld */; };
@@ -39,6 +41,8 @@
 
 /* Begin PBXFileReference section */
 		625C245C2083D17200E60E8D /* CourseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseTableViewController.swift; sourceTree = "<group>"; };
+		62750636209CF8DE00732965 /* visualize_history.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = visualize_history.sh; sourceTree = "<group>"; };
+		62750638209CF8EA00732965 /* gitlogparse.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = gitlogparse.py; sourceTree = "<group>"; };
 		6288FCEB2044DB0C00EC28E1 /* Binder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Binder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6288FCEE2044DB0C00EC28E1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6288FCF32044DB0C00EC28E1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -116,6 +120,8 @@
 			children = (
 				6288FCEE2044DB0C00EC28E1 /* AppDelegate.swift */,
 				6288FCF22044DB0C00EC28E1 /* Main.storyboard */,
+				62750638209CF8EA00732965 /* gitlogparse.py */,
+				62750636209CF8DE00732965 /* visualize_history.sh */,
 				C928FD03208D160B007CF917 /* AssignmentTableViewController.swift */,
 				62EA92FF209B8B5800D383CC /* CreateTaskViewController.swift */,
 				62EA92FD209B8B4700D383CC /* DataStore.swift */,
@@ -216,7 +222,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				62750637209CF8DE00732965 /* visualize_history.sh in Resources */,
 				6288FCFC2044DB0C00EC28E1 /* LaunchScreen.storyboard in Resources */,
+				62750639209CF8EA00732965 /* gitlogparse.py in Resources */,
 				C9C166C02071E94800F5FE06 /* GoogleService-Info.plist in Resources */,
 				6288FCF92044DB0C00EC28E1 /* Assets.xcassets in Resources */,
 				6288FCF42044DB0C00EC28E1 /* Main.storyboard in Resources */,
